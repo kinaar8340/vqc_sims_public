@@ -1,7 +1,5 @@
-# /vqc_sims/src/isomap_integration.py | Updated Nov 19, 2025: Phase 1.2.78 – 8-QUBIT QEC FULLY INTEGRATED
+# /vqc_sims/src/isomap_integration.py
 
-# === UNIVERSAL L_max RESOLUTION – Phase 1.2.51 (FINAL) ===
-# Paste this at the TOP of EVERY src/*.py and analysis/*.py (above all other code)
 import os
 import yaml
 from pathlib import Path
@@ -44,11 +42,18 @@ L_max = _resolve_l_max()  # ← GLOBAL, resolved ONCE at import
 print(f"Final effective L_max = {L_max}\n")
 # ============================================================
 
-# === UNIVERSAL QEC_8QUBIT RESOLUTION – Phase 1.2.78 OMEGA FINAL ===
+# === 16-QUBIT ===
+import os
+
+qec_level = int(os.getenv('QEC_LEVEL', '8'))
 qec_8qubit = os.getenv('VQC_QEC_8QUBIT', 'false').lower() == 'true'
-if qec_8qubit:
-    print("▓▒░ 8-QUBIT QEC ACTIVE – Phase 1.2.78 suppression engaged ░▒▓")
-# ============================================================
+qec_16qubit = os.getenv('VQC_QEC_16QUBIT', 'false').lower() == 'true'
+
+# Exponent: 8→8, 16→16, 32→32, etc. (scalable to QEC^∞)
+qec_suppression_exponent = max(qec_level, 8)
+
+effective_mode = f"{qec_level}-QUBIT" if qec_level >= 16 else "8-QUBIT"
+print(f"▓▒░ {effective_mode} QEC ░▒▓")
 
 import re
 import numpy as np
@@ -204,7 +209,7 @@ def apply_isomap_to_data(
                 fig.colorbar(sc, ax=ax, label='Sample Index')
                 title = f'Isomap 3D • {clean_name}_L{L_max}'
                 if qec_8qubit:
-                    title += ' [8-QUBIT QEC ACTIVE]'
+                    title += f' [{qec_level}-QUBIT QEC ACTIVE]'
                 ax.set_title(f'{title}\nstress = {stress:.4f} | L_max={L_max}')
                 ax.set_xlabel('Comp 1'); ax.set_ylabel('Comp 2'); ax.set_zlabel('Comp 3')
                 plt.savefig(plot_path, dpi=150, bbox_inches='tight')
@@ -215,7 +220,7 @@ def apply_isomap_to_data(
                 plt.colorbar(label='Sample Index')
                 title = f'Isomap 2D • {clean_name}_L{L_max}'
                 if qec_8qubit:
-                    title += ' [8-QUBIT QEC ACTIVE]'
+                    title += f' [{qec_level}-QUBIT QEC ACTIVE]'
                 plt.title(f'{title}\nstress = {stress:.4f} | L_max={L_max}')
                 plt.xlabel('Component 1'); plt.ylabel('Component 2')
                 plt.savefig(plot_path, dpi=150, bbox_inches='tight')
@@ -269,7 +274,7 @@ def batch_apply_isomap(
 
     print(f"Launching parallel Isomap (n_jobs={n_jobs}) with L_max={L_max}...")
     if qec_8qubit:
-        print("░▒▓ 8-QUBIT QEC SUPPRESSION ACTIVE ACROSS BATCH ▓▒░")
+        print(f"░▒▓ {qec_level}-QUBIT QEC ▓▒░")
 
     results = Parallel(n_jobs=n_jobs)(delayed(process)(p) for p in paths_to_process)
 
@@ -311,7 +316,7 @@ if __name__ == "__main__":
         n_neighbors=None,
         metrics_csv=metrics_path
     )
-    qec_status = " [8-QUBIT QEC ACTIVE]" if qec_8qubit else ""
+    qec_status = f" [{qec_level}-QUBIT QEC ACTIVE]" if qec_8qubit else ""
     print(f"\nBatch complete | L_max={L_max}{qec_status} | Valid embeddings: {len(embeddings)} | "
           f"Mean stress: {summary.get('mean_stress', np.nan):.4f}")
 

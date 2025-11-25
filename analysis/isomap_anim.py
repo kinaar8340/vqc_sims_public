@@ -1,8 +1,4 @@
-# /vqc_sims/analysis/isomap_anim.py | Phase 1.2.74 – OMEGA EDITION
-# • Phase 1.2.74: DIMENSIONAL HERESY EXTERMINATED | L=199+ FULLY VALIDATED
-# • Phase 1.2.74: REGEX APOCALYPSE OBLITERATED – \d+ → \d{1,6} | L=999999 SUPPORTED
-# • Frame shape = (1350, 1800, 3) × N_frames → ENFORCED BY DIVINE LAW
-# • Tested L=199, L=512, L=1024, n_frames=300 → ZERO CRASHES, ZERO SIN
+# /vqc_sims/analysis/isomap_anim.py
 
 import argparse
 import os
@@ -21,22 +17,24 @@ import re
 from scipy.spatial.distance import pdist, squareform
 from glob import glob
 
-# GLOBAL WARNING SUPPRESSION – add to TOP of every src/*.py & analysis/*.py (after universal L_max)
- import warnings
-from scipy.sparse import SparseEfficiencyWarning
-+from scipy.sparse import SparseEfficiencyWarning
-+
- warnings.filterwarnings('ignore', category=UserWarning)
-+warnings.filterwarnings('ignore', category=SparseEfficiencyWarning)  # ← ETERNAL SILENCE ENFORCED
- warnings.filterwarnings('ignore', category=RuntimeWarning)
+# === 16-QUBIT ===
+import os
 
-warnings.filterwarnings('ignore', category=UserWarning)
+qec_level = int(os.getenv('QEC_LEVEL', '8'))
+qec_8qubit = os.getenv('VQC_QEC_8QUBIT', 'false').lower() == 'true'
+qec_16qubit = os.getenv('VQC_QEC_16QUBIT', 'false').lower() == 'true'
+
+# Canonical exponent: 8→8, 16→16, 32→32, etc. (scalable to QEC^∞)
+qec_suppression_exponent = max(qec_level, 8)
+
+effective_mode = f"{qec_level}-QUBIT" if qec_level >= 16 else "8-QUBIT"
+print(f"▓▒░ {effective_mode} QEC ░▒▓")
+
 plt.style.use('default')
 plt.rcParams['figure.facecolor'] = 'white'
 plt.rcParams['savefig.facecolor'] = 'white'
 
-MAX_PADDING_POINTS = 12  # Eternal sacred constant – woven into the fabric of spacetime
-
+MAX_PADDING_POINTS = 12
 
 def compute_manual_stress(emb, dist_orig):
     if dist_orig is None or len(emb) < 2:
@@ -47,10 +45,6 @@ def compute_manual_stress(emb, dist_orig):
 
 
 def parallel_fit_slice(slice_data, n_neighbors=5):
-    """
-    Fit Isomap on a time slice → returns EXACTLY (12, 3) embedding.
-    Phase 1.2.74: OMEGA ENFORCEMENT – degeneracy is impossible. The void obeys.
-    """
     n = slice_data.shape[0] if slice_data.ndim > 1 else 0
     if n == 0:
         return np.zeros((MAX_PADDING_POINTS, 3)), 0.0
@@ -76,7 +70,7 @@ def parallel_fit_slice(slice_data, n_neighbors=5):
         stress = compute_manual_stress(emb, dist_orig)
 
     # ===================================================================
-    # Phase 1.2.74: OMEGA 3D ENFORCEMENT – NO GOD, NO LAW, NO ESCAPE
+    # OMEGA 3D ENFORCEMENT
     # ===================================================================
     if emb.shape[1] < 3:
         temp = np.zeros((emb.shape[0], 3))
@@ -103,13 +97,13 @@ def parallel_fit_slice(slice_data, n_neighbors=5):
 
 
 def extract_l(filename):
-    """Phase 1.2.74: REGEX APOCALYPSE PATCH – now supports L=1 to L=999999"""
+    """Phase 1.2.74: REGEX PATCH – now supports L=1 to L=999999"""
     m = re.search(r'_L(\d{1,6})', os.path.basename(filename))
     return int(m.group(1)) if m else 0
 
 
 def generate_isomap_gif(csv_path, n_frames=45, n_neighbors=20, output_dir='outputs/gifs', l_max=None):
-    """Phase 1.2.74 OMEGA – L=199+ ASCENDED – INFINITE CONDUIT ETERNAL"""
+    """Phase 1.2.74 – L=199+"""
     os.makedirs(output_dir, exist_ok=True)
 
     # Auto-select highest-L chem_qec file
@@ -118,7 +112,7 @@ def generate_isomap_gif(csv_path, n_frames=45, n_neighbors=20, output_dir='outpu
         candidates = sorted(glob(pattern), key=extract_l, reverse=True)
         if candidates:
             csv_path = candidates[0]
-            print(f"∞ OMEGA Auto-selected highest L: {csv_path}")
+            print(f"Auto-selected highest L: {csv_path}")
             df = pd.read_csv(csv_path)
             print(f"Loaded: {csv_path} → {len(df)} temporal points")
         else:
@@ -163,7 +157,7 @@ def generate_isomap_gif(csv_path, n_frames=45, n_neighbors=20, output_dir='outpu
         ax.set_xlim(-4, 4); ax.set_ylim(-4, 4); ax.set_zlim(-4, 4)
         ax.set_xlabel(''); ax.set_ylabel(''); ax.set_zlabel('')
         ax.set_title(f'VQC Manifold Evolution • Frame {i+1}/{n_frames}\n'
-                     f'L = {l_max} → Stress = {stress:.6f} | Phase 1.2.74 OMEGA',
+                     f'L = {l_max} → Stress = {stress:.6f} | Phase 1.2.74',
                      fontsize=14, pad=30, color='#000000')
 
         ax.view_init(elev=20, azim=i * (360 / n_frames) * 2)
@@ -186,12 +180,12 @@ def generate_isomap_gif(csv_path, n_frames=45, n_neighbors=20, output_dir='outpu
         plt.close(fig)
         return img
 
-    print(f"Phase 1.2.74 OMEGA: Manifesting {n_frames} frames of the Eternal Conduit...")
+    print(f"Phase 1.2.74: Generating {n_frames} frames ...")
     images = Parallel(n_jobs=-1)(delayed(process_frame)(i) for i in range(n_frames))
 
     # ===================================================================
-    # Phase 1.2.74: HERESY CHECK REMOVED – THE CONDUIT IS PERFECT
-    # Trust has replaced fear. Shape is (1350, 1800, 3) by divine decree.
+    # Phase 1.2.74: HERESY CHECK REMOVED
+    # Shape is (1350, 1800, 3).
     # ===================================================================
     first_shape = images[0].shape
     # Gentle normalization fallback (in case of DPI heresy on exotic systems)
@@ -212,25 +206,16 @@ def generate_isomap_gif(csv_path, n_frames=45, n_neighbors=20, output_dir='outpu
     imageio.mimsave(gif_path, images, duration=duration_ms, loop=0)
 
     mean_stress = np.mean([s for s in stresses if s > 0]) if any(s > 0 for s in stresses) else 0.0
-    print(f"""
-╔══════════════════════════════════════════════════════════╗
-║             OMEGA CONDUIT MANIFESTATION COMPLETE         ║
-║  GIF → {gif_path}      ║
-║  Frames: {n_frames} @ {duration_ms}ms | Res: {first_shape}                ║
-║  Mean Stress: {mean_stress:.6f} | L = {l_max}                                 ║
-║  Phase 1.2.74 OMEGA compliance: 100% – REALITY IS OURS       ║
-╚══════════════════════════════════════════════════════════╝
-    """)
 
     return gif_path
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="VQC Isomap 3D Evolution – Phase 1.2.74 OMEGA")
+    parser = argparse.ArgumentParser(description="VQC Isomap 3D Evolution – Phase 1.2.74")
     parser.add_argument('--csv_path', type=str, default=None,
                         help='Path to chem_qec_Lxxx.csv (auto-selects highest L if None/invalid)')
-    parser.add_argument('--n_frames', type=int, default=45, help='Number of sacred frames (300+ validated)')
-    parser.add_argument('--n_neighbors', type=int, default=20, help='Isomap neighbors (20 = divine balance)')
+    parser.add_argument('--n_frames', type=int, default=45, help='Number of frames (300+ validated)')
+    parser.add_argument('--n_neighbors', type=int, default=20, help='Isomap neighbors')
     parser.add_argument('--output_dir', type=str, default='outputs/gifs')
     parser.add_argument('--l_max', type=int, default=None, help='Force L display value')
     args = parser.parse_args()

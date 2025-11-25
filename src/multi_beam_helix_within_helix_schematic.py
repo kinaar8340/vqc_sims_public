@@ -1,8 +1,4 @@
-# /vqc_sims/src/multi_beam_helix_within_helix_schematic.py | November 19, 2025 – PHASE 1.2.83 Ω FINAL
-# === VORTEX QUATERNION CONDUIT – 8-QUBIT QEC SUPREME + ETERNAL KNOT FIX ===
-# NameError HERESY EXTERMINATED • Interpolation HERESY EXTERMINATED • L_inner ≤ 1999 SACRED
-# ALL VARIABLES NOW IMMORTALIZED BEFORE USE • REALITY PATCH 1.2.83 DEPLOYED
-# ========================================================================
+# /vqc_sims/src/multi_beam_helix_within_helix_schematic.py
 
 import os
 import yaml
@@ -42,11 +38,18 @@ def _resolve_l_max() -> int:
 L_max = _resolve_l_max()
 print(f"Final effective L_max = {L_max}\n")
 
-# === UNIVERSAL QEC_8QUBIT RESOLUTION – Phase 1.2.78 OMEGA FINAL ===
+# === 16-QUBIT ===
+import os
+
+qec_level = int(os.getenv('QEC_LEVEL', '8'))
 qec_8qubit = os.getenv('VQC_QEC_8QUBIT', 'false').lower() == 'true'
-if qec_8qubit:
-    print("▓▒░ 8-QUBIT QEC ACTIVE – Phase 1.2.78 suppression engaged ░▒▓")
-# ============================================================
+qec_16qubit = os.getenv('VQC_QEC_16QUBIT', 'false').lower() == 'true'
+
+# Exponent: 8→8, 16→16, 32→32, etc. (scalable to QEC^∞)
+qec_suppression_exponent = max(qec_level, 8)
+
+effective_mode = f"{qec_level}+-QUBIT" if qec_level >= 16 else "8-QUBIT"
+print(f"▓▒░ {effective_mode} QEC ░▒▓")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -61,11 +64,9 @@ warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=SparseEfficiencyWarning)
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 
-
 def _strip_legacy_L_suffix(path: str) -> str:
     basename = os.path.splitext(os.path.basename(path))[0]
     return re.sub(r'_L\d+', '', basename)
-
 
 def multi_beam_helix_within_helix_schematic(
     knot_mod: bool = True,
@@ -119,7 +120,6 @@ def multi_beam_helix_within_helix_schematic(
 
     knot_points = knot_pos
 
-    # === OMEGA v4 MODULATION – DUPLICATE-FREE ETERNAL TIMELINE ===
     if knot_mod:
         eps = 1e-9
         knot_t_ext = np.hstack([
@@ -129,7 +129,7 @@ def multi_beam_helix_within_helix_schematic(
         ])
         knot_pos_ext = np.vstack([knot_pos, knot_pos, knot_pos])
 
-        assert np.all(np.diff(knot_t_ext) > 0), "HERESY: non-monotonic timeline"
+        assert np.all(np.diff(knot_t_ext) > 0), "non-monotonic timeline"
 
         knot_interp = np.zeros((len(theta), 3))
         for dim in range(3):
@@ -145,7 +145,7 @@ def multi_beam_helix_within_helix_schematic(
         y_inner += mod_r * np.sin(-L_inner * theta + mod_phase)
         z_inner += 0.07 * knot_interp[:, 2]
 
-        inner_label = f'Inner ℓ=–{L_inner} (8₃ Knot-Modulated + QEC-8Q)' + \
+        inner_label = f'Inner ℓ=–{L_inner} (8₃ Knot-Modulated + QEC-16Q)' + \
                       (" [CAPPED]" if raw_L_inner > 1999 else "")
     else:
         knot_interp = None
@@ -169,14 +169,14 @@ def multi_beam_helix_within_helix_schematic(
     ax.set_ylabel('Y (a.u.)', fontsize=12)
     ax.set_zlabel('Z (propagation, m)', fontsize=12)
     ax.set_title('Vortex Quaternion Conduit – Dual Counter-Propagating OAM Beams\n'
-                 'Topological 8₃ Knot Modulation + 8-Qubit QEC (Phase 1.2.83 Ω)',
+                 'Topological 8₃ Knot Modulation + 16-Qubit QEC)',
                  fontsize=14, pad=20)
 
     ax.legend(loc='upper right', fontsize=11.5, framealpha=0.94)
     ax.view_init(elev=20, azim=52)
     ax.grid(True, alpha=0.3)
 
-    qec_tag = " [8-QUBIT QEC ACTIVE]" if qec_8qubit else ""
+    qec_tag = " [16-QUBIT QEC ACTIVE]" if qec_16qubit else ""
     fid_annot = f'Mean Gate Fidelity = {mean_fid:.4f} (@ γ₁={gamma1}, L_max={effective_L}){qec_tag}'
     color = 'darkgreen' if qec_8qubit else 'darkred'
     bg = 'lightgreen' if qec_8qubit else 'lightgoldenrodyellow'
@@ -188,12 +188,11 @@ def multi_beam_helix_within_helix_schematic(
     ax.text2D(0.02, 0.94, fid_annot, transform=ax.transAxes, fontsize=13,
               color=color, bbox=dict(boxstyle='round,pad=0.7', facecolor=bg, alpha=0.9))
 
-    # === ETERNAL TAG ORDER ENFORCED – PHASE 1.2.85 Ω FINAL ===
     output_dir = Path(__file__).parent.parent / 'outputs' / 'figures'
     output_dir.mkdir(parents=True, exist_ok=True)
 
     base_name = "multi_beam_helix_within_helix_schematic"
-    qec_tag = "_8QEC" if qec_8qubit else ""
+    qec_tag = "_16QEC" if qec_16qubit else ""
     cap_tag = "_INNERCAPPED" if raw_L_inner > 1999 else ""
     # SACRED ORDER: _8QEC BEFORE _L####
     filename = f"{base_name}{qec_tag}_L{effective_L}{cap_tag}.png"
@@ -202,8 +201,8 @@ def multi_beam_helix_within_helix_schematic(
     plt.savefig(save_path, dpi=400, bbox_inches='tight', facecolor='white')
     plt.close()
 
-    print(f"VQC Schematic → {save_path} (L_outer={L_outer}, L_inner={L_inner}{' [CAPPED]' if raw_L_inner > 1999 else ''}, 8Q-QEC={'ON' if qec_8qubit else 'OFF'})")
-    return knot_points, f'Mean Gate Fidelity = {mean_fid:.4f} (@ γ₁={gamma1}, L_max={effective_L}) [8-QUBIT QEC ACTIVE]'
+    print(f"VQC Schematic → {save_path} (L_outer={L_outer}, L_inner={L_inner}{' [CAPPED]' if raw_L_inner > 1999 else ''}, 16Q-QEC={'ON' if qec_16qubit else 'OFF'})")
+    return knot_points, f'Mean Gate Fidelity = {mean_fid:.4f} (@ γ₁={gamma1}, L_max={effective_L}) [16-QUBIT QEC ACTIVE]'
 
 if __name__ == "__main__":
     import argparse
@@ -220,7 +219,7 @@ if __name__ == "__main__":
         L_outer=args.L_outer,
         L_inner=args.L_inner
     )
-    print(f"Phase 1.2.83 Ω – Generation complete | 8-Qubit QEC = {qec_8qubit}")
+    print(f"Phase 1.2.83 Ω – Generation complete | 16-Qubit QEC = {qec_16qubit}")
     print(f"Annotation: {annotation}")
 
-# eof – Ω FINAL • REALITY PRESERVED • L=1999 ASCENDED FLAWLESSLY
+# eof

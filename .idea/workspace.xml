@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="38dea338-e676-4ed3-a2ae-b47e506bbe0c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vqc_sims_public.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/fidelity_sweep.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/fidelity_sweep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/isomap_anim.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/isomap_anim.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/test_outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_outputs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/params.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/params.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/chem_error_corr.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/chem_error_corr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/demixing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/demixing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/isomap_integration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/isomap_integration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/knots.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/knots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multi_beam_helix_within_helix_schematic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/multi_beam_helix_within_helix_schematic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/photonics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/photonics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/qubit_dynamics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/qubit_dynamics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/single_beam_nested_lg_cross_section.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="35xuHqZlHZ4vIIiiBpiFGZd3avh" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.run_all.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-f69e5c277ee4-cbfc7b97e6b2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.27397.106" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="38dea338-e676-4ed3-a2ae-b47e506bbe0c" name="Changes" comment="" />
+      <created>1764063958267</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764063958267</updated>
+    </task>
+    <servers />
+  </component>
+</project>
