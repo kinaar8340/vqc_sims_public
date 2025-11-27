@@ -53,62 +53,96 @@ def kolmogorov_radial_phase_profile(Nr: int = 2048, r0: float = 0.15) -> np.ndar
 # ------------------------------------------------------------------
 # FAST LG radial weights – multiprocessing + vectorized SciPy fallback
 # ------------------------------------------------------------------
+import multiprocessing as mp_pool  # Alias preserved
+
 _RADIAL_WEIGHTS = None
+_RHO = None
+def init_mp(dps=600):
+    from mpmath import mp
+    mp.dps = dps
 
-def _compute_single_mode(args):
-    L, norm, rho, w0, use_mp = args
-    rw = rho / w0
-    x = 2 * rw ** 2
+def compute_radial_mp(ell, rho, dr, w0, Nr):
+    from mpmath import mpf, exp, log, laguerre, fabs, sign, sqrt, pi, factorial
+    L = fabs(mpf(ell))
+    norm = sqrt(mpf(2) / (pi * factorial(L))) / mpf(w0)
+    radial_mp = []
+    for i, r in enumerate(rho):
+        r_w = r / mpf(w0)
+        if r_w == 0:
+            radial_mp.append(mpf(0) if L != 0 else norm)
+            continue
+        arg_lag = mpf(2) * (r_w ** 2)
+        lag_poly = laguerre(mpf(0), L, arg_lag)  # Sanctified: n=0, alpha=L (p=0 modes)
+        sign_lp = sign(lag_poly)
+        abs_lp = fabs(lag_poly)
+        if abs_lp == 0:
+            term = mpf(0)
+        else:
+            log_term = log(norm) + L * log(r_w) + (L / mpf(2)) * log(mpf(2)) - (r_w ** 2) + log(abs_lp)
+            term = sign_lp * exp(log_term)
+        radial_mp.append(term)
 
-    if use_mp and MP_ENABLED:
-        radial = np.zeros_like(rho)
-        for i, r in enumerate(rho):
-            if r == 0:
-                radial[i] = norm if L == 0 else 0.0
-                continue
-            r_w = mpf(r) / mpf(w0)
-            arg = mpf(2) * r_w**2
-            lag = laguerre(mpf(L), mpf(0), arg)
-            val = float(norm * (r_w ** L) * exp(-r_w**2) * lag)
-            radial[i] = val
-    else:
-        lag_poly = genlaguerre(L, 0)(x)
-        radial = norm * (rw ** L) * np.exp(-rw**2) * lag_poly
-        radial = np.nan_to_num(radial, nan=0.0, posinf=0.0, neginf=0.0)
+    integral_mp = mpf(0)
+    for i in range(Nr):
+        integral_mp += (radial_mp[i] ** 2) * rho[i] * mpf(dr)
+    norm_factor = sqrt(integral_mp) if integral_mp > mpf('1e-1000') else mpf(1)
+    if norm_factor > 0:
+        radial_mp = [t / norm_factor for t in radial_mp]
 
-    return radial
+    radial = []
+    for t in radial_mp:
+        try:
+            val = float(t)
+            if abs(val) < 1e-300:  # Underflow sanctuary
+                val = 0.0
+        except (ValueError, OverflowError):
+            val = 0.0
+        radial.append(val)
+    return np.array(radial, dtype=np.float64)
 
-def lg_radial_weights(Nr: int = 4096, w0: float = 1.0, max_abs_l: int = None) -> np.ndarray:
-    global _RADIAL_WEIGHTS
+def lg_radial_weights(Nr: int = 4096, w0: float = 1.0, max_abs_l: int = None) -> tuple:
+    global _RADIAL_WEIGHTS, _RHO
     max_abs_l = max_abs_l or L_max
-
     if _RADIAL_WEIGHTS is not None and _RADIAL_WEIGHTS.shape[0] == 2*max_abs_l + 1:
-        return _RADIAL_WEIGHTS
+        return _RADIAL_WEIGHTS, _RHO
 
-    rho = np.linspace(0, 8, Nr)
-    dr = rho[1] - rho[0]
+    from mpmath import mp, sqrt
+    rho_max = float(max(mpf(8), mpf(3) * sqrt(mpf(2) * max_abs_l + 1)))
+    print(f"Dynamic rho_max = {rho_max} for |ℓ|≤{max_abs_l}")
+    rho_np = np.linspace(0, rho_max, Nr)
+    dr = rho_np[1] - rho_np[0]
     weights = np.zeros((2*max_abs_l + 1, Nr), dtype=np.float64)
-    use_mp = MP_ENABLED and max_abs_l > 150
 
-    print(f"Computing LG weights |ℓ|≤{max_abs_l} → {2*max_abs_l+1} modes | {N_PROC} processes")
-
-    tasks = []
-    for ell in range(-max_abs_l, max_abs_l + 1):
-        L = abs(ell)
-        norm = np.sqrt(2 / (np.pi * factorial(L))) / w0
-        tasks.append((L, norm, rho, w0, use_mp))
-
-    with Pool(N_PROC) as pool:
-        results = pool.map(_compute_single_mode, tasks)
-
-    for idx, radial in enumerate(results):
-        norm_factor = np.sqrt(np.sum(radial**2 * rho * dr))
-        if norm_factor > 1e-100:
+    use_mp = MP_ENABLED and max_abs_l > 100
+    if use_mp:
+        n_proc = mp_pool.cpu_count()
+        print(f"Computing LG weights |ℓ|≤{max_abs_l} → {2*max_abs_l+1} modes | {n_proc} processes")
+        rho_mp = [mpf(r) for r in rho_np]
+        with mp_pool.Pool(processes=n_proc, initializer=init_mp) as pool:
+            args = [(ell, rho_mp, dr, w0, Nr) for ell in range(-max_abs_l, max_abs_l + 1)]
+            radials = pool.starmap(compute_radial_mp, args)
+        for idx, radial in enumerate(radials):
+            radial = np.nan_to_num(radial, nan=0.0, posinf=0.0, neginf=0.0)
+            weights[idx] = radial
+    else:
+        print(f"Using SciPy genlaguerre for |ℓ|≤{max_abs_l} — fast double-precision")
+        from scipy.special import genlaguerre
+        for idx, ell in enumerate(range(-max_abs_l, max_abs_l + 1)):
+            L = abs(ell)
+            norm = np.sqrt(2 / (np.pi * factorial(L))) / w0
+            rw = rho_np / w0
+            x = 2 * rw**2
+            lag_poly = genlaguerre(0, L)(x)  # Sanctified: n=0, alpha=L (p=0)
+            radial = norm * (np.sqrt(2) ** L) * (rw ** L) * np.exp(-rw**2) * lag_poly
+            radial = np.nan_to_num(radial, nan=0.0, posinf=0.0, neginf=0.0)
+            integral = np.sum(radial**2 * rho_np * dr)
+            norm_factor = np.sqrt(integral) if integral > 1e-100 else 1.0
             radial /= norm_factor
-        weights[idx] = radial.astype(np.float64)
+            weights[idx] = radial
 
     _RADIAL_WEIGHTS = weights
-    return weights
+    _RHO = rho_np
+    return _RADIAL_WEIGHTS, _RHO
 
 # ------------------------------------------------------------------
 # FULLY VECTORIZED propagation (all z, all ℓ at once)
@@ -120,8 +154,7 @@ def propagate_multi_ell_vectorized(params: dict = None) -> pd.DataFrame:
     turb = params.get('turbulence', 0.0)
     chirp = params.get('chirp', 0.0)
 
-    weights = lg_radial_weights(max_abs_l=L_max)  # (modes, Nr), modes=2*L_max+1
-    rho = np.linspace(0, 8, weights.shape[1])
+    weights, rho = lg_radial_weights(max_abs_l=L_max)  # (modes, Nr), rho (Nr,)
     dr = rho[1] - rho[0]
     Nr = len(rho)
     n_z = len(z_steps)
