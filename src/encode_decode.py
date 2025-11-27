@@ -60,7 +60,7 @@ def lg_mode(ell, rho, phi, w0):
 # p-Wave Altermagnetic Parameters - From PDFs (e.g., Amendment-VQC-pWave-Altermagnetic-BMGL-US63913110.pdf)
 lambda_soc = 0.4  # Spin-orbit coupling (SOC)
 p_odd_parity = 1.2  # Odd-parity p-wave splitting
-gamma_1 = 1.2  # Inhibition factor for BMGL (updated to 1.2 for consistency, ~6.7% boost)
+gamma_1 = 1.3  # Inhibition factor for BMGL (updated to 1.2 for consistency, ~6.7% boost)
 chirp_rate = 0.5  # GHz/ns (tunable for pyramidal pulses)
 detune_scale = 0.01  # BMGL detuning proxy (alpha) (reduced further to 0.015)
 alpha_chemical = 0.015  # Chemical error rate proxy (lowered to match 16-qubit chem FID ≥0.9999)

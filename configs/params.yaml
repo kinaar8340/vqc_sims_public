@@ -11,7 +11,7 @@ qubit_single:
 
 qubit_multi:
   H: 5.0
-  L_max: 7999
+  L_max: 1999
   omega: 1.0
   coupling: 0.1
   T1_us: 50.0
