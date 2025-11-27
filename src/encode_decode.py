@@ -159,7 +159,7 @@ def overcomplete_ica(mixed, n_components, reference_sources=None, is_complex=Fal
 
 
 # Simulation Parameters
-num_modes = 4  # ℓ = 0,1,2,3 proxy (scales to L_max=1999)
+num_modes = 16  # ℓ = 0,1,2,3 proxy (scales to L_max=1999)
 grid_size = 100
 num_times = 20
 w0 = 1.0
