@@ -36,9 +36,35 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+<<<<<<< HEAD
 **Requirements:** Python 3.10+ · tested on a 72-core PowerEdge R630; scales down on consumer hardware with reduced `L_max`.
 
 ### 2. Run the full pipeline
+=======
+For full details, see attached patent docs and Phys.org summary on p-wave magnets enabling smaller chips via helical spins.
+Ecosystem
+
+This public Phase-1 stack remains the **parent OAM simulation suite**. Related repos:
+
+| Repo | Role |
+|------|------|
+| [flux_hopf_lib](https://github.com/kinaar8340/flux_hopf_lib) | Shared Quaternion / Hopf / flux core (`src/quaternion_core.py` re-exports) |
+| [vqc_proto](https://github.com/kinaar8340/vqc_proto) | Orbital Braille typehead + HF Space demos |
+| [hfb](https://github.com/kinaar8340/hfb) | Hopf flux bubble / analog gravity |
+
+```bash
+# Shared core (recommended before running encode/decode)
+pip install -e ../../flux_hopf_lib   # sibling under Projects/
+# or: pip install "flux-hopf-lib @ git+https://github.com/kinaar8340/flux_hopf_lib.git@main"
+pip install -r requirements.txt
+```
+
+Dependencies
+
+Python 3.10+
+flux-hopf-lib (shared Quaternion/Rodrigues), NumPy, SciPy, Matplotlib, Joblib, numpy-quaternion, ReportLab
+Tested on PowerEdge 630 (72 cores); scales to consumer hardware with reduced L.
+>>>>>>> 2e3b12c (Re-export Quaternion from flux_hopf_lib)
 
 ```bash
 # Recommended: respects params.yaml, parallel Isomap, auto-archives to data/L199/

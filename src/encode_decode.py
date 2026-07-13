@@ -12,40 +12,8 @@ from sklearn.decomposition import FastICA
 np.random.seed(42)
 
 
-# Quaternion class for 3D rotations (Hamilton product) - from vqc-encoding-8bit-squidcurrents.py
-class Quaternion:
-    def __init__(self, w, x=0, y=0, z=0):
-        self.w = w
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def __repr__(self):
-        return f"q({self.w:.3f} + {self.x:.3f}i + {self.y:.3f}j + {self.z:.3f}k)"
-
-    def norm(self):
-        return np.sqrt(self.w ** 2 + self.x ** 2 + self.y ** 2 + self.z ** 2)
-
-    def conjugate(self):
-        return Quaternion(self.w, -self.x, -self.y, -self.z)
-
-    def inverse(self):
-        n = self.norm()
-        return Quaternion(self.w / n ** 2, -self.x / n ** 2, -self.y / n ** 2, -self.z / n ** 2)
-
-    def multiply(self, other):
-        w = self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z
-        x = self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y
-        y = self.w * other.y - self.x * other.z + self.y * other.w + self.z * other.x
-        z = self.w * other.z + self.x * other.y - self.y * other.x + self.z * other.w
-        return Quaternion(w, x, y, z)
-
-    def rotate_vector(self, v):
-        # v: numpy array [x, y, z]
-        qv = Quaternion(0, v[0], v[1], v[2])
-        q_inv = self.inverse()
-        rotated = self.multiply(qv).multiply(q_inv)
-        return np.array([rotated.x, rotated.y, rotated.z])
+# Quaternion / Rodrigues — shared core (flux_hopf_lib) via quaternion_core shim
+from quaternion_core import Quaternion, quaternion_encode, rodrigues_rotation  # noqa: E402
 
 
 # LG Mode Generation - Integrated from complex_ica.py
@@ -64,21 +32,6 @@ gamma_1 = 1.3  # Inhibition factor for BMGL (updated to 1.2 for consistency, ~6.
 chirp_rate = 0.5  # GHz/ns (tunable for pyramidal pulses)
 detune_scale = 0.01  # BMGL detuning proxy (alpha) (reduced further to 0.015)
 alpha_chemical = 0.015  # Chemical error rate proxy (lowered to match 16-qubit chem FID ≥0.9999)
-
-
-# Rodrigues Rotation for Stabilization
-def rodrigues_rotation(v, k, theta):
-    # v: vector, k: axis, theta: angle
-    v_rot = v * np.cos(theta) + np.cross(k, v) * np.sin(theta) + k * (np.dot(k, v)) * (1 - np.cos(theta))
-    return v_rot
-
-
-# Quaternion Encoding (Hypercomplex Compression)
-def quaternion_encode(data):
-    # Simulate 50-100x compression: map data to quaternion scalars
-    norm_data = data / np.linalg.norm(data)
-    q = Quaternion(norm_data[0], norm_data[1], norm_data[2], norm_data[3] if len(norm_data) > 3 else 0)
-    return q
 
 
 # Pyramidal FM Pulse Generation
