@@ -33,18 +33,15 @@ Pre-generated simulation archives under `data/L199/` are not included in this re
 git clone https://github.com/kinaar8340/vqc_sims_public.git
 cd vqc_sims_public
 python3 -m venv .venv && source .venv/bin/activate
+# Shared Quaternion core (with vqc_proto / flux_hopf_lib ecosystem)
+pip install -e ../../flux_hopf_lib   # if cloned under Projects/ as sibling
+# or: pip install "flux-hopf-lib @ git+https://github.com/kinaar8340/flux_hopf_lib.git@v0.1.0"
 pip install -r requirements.txt
 ```
 
-<<<<<<< HEAD
-**Requirements:** Python 3.10+ · tested on a 72-core PowerEdge R630; scales down on consumer hardware with reduced `L_max`.
+**Requirements:** Python 3.10+ · [flux-hopf-lib](https://github.com/kinaar8340/flux_hopf_lib) · tested on a 72-core PowerEdge R630; scales down on consumer hardware with reduced `L_max`.
 
-### 2. Run the full pipeline
-=======
-For full details, see attached patent docs and Phys.org summary on p-wave magnets enabling smaller chips via helical spins.
-Ecosystem
-
-This public Phase-1 stack remains the **parent OAM simulation suite**. Related repos:
+### Ecosystem
 
 | Repo | Role |
 |------|------|
@@ -52,19 +49,9 @@ This public Phase-1 stack remains the **parent OAM simulation suite**. Related r
 | [vqc_proto](https://github.com/kinaar8340/vqc_proto) | Orbital Braille typehead + HF Space demos |
 | [hfb](https://github.com/kinaar8340/hfb) | Hopf flux bubble / analog gravity |
 
-```bash
-# Shared core (recommended before running encode/decode)
-pip install -e ../../flux_hopf_lib   # sibling under Projects/
-# or: pip install "flux-hopf-lib @ git+https://github.com/kinaar8340/flux_hopf_lib.git@main"
-pip install -r requirements.txt
-```
+This public Phase-1 stack remains the **parent OAM simulation suite**; demos live in `vqc_proto`.
 
-Dependencies
-
-Python 3.10+
-flux-hopf-lib (shared Quaternion/Rodrigues), NumPy, SciPy, Matplotlib, Joblib, numpy-quaternion, ReportLab
-Tested on PowerEdge 630 (72 cores); scales to consumer hardware with reduced L.
->>>>>>> 2e3b12c (Re-export Quaternion from flux_hopf_lib)
+### 2. Run the full pipeline
 
 ```bash
 # Recommended: respects params.yaml, parallel Isomap, auto-archives to data/L199/

@@ -1,6 +1,6 @@
 # Shared core — Quaternion / Rodrigues (canonical with vqc_proto)
 # Local: pip install -e ../../flux_hopf_lib
-flux-hopf-lib @ git+https://github.com/kinaar8340/flux_hopf_lib.git@main
+flux-hopf-lib @ git+https://github.com/kinaar8340/flux_hopf_lib.git@v0.1.0
 
 qutip==5.2.2
 numpy>=1.24.0
