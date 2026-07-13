@@ -35,7 +35,7 @@ cd vqc_sims_public
 python3 -m venv .venv && source .venv/bin/activate
 # Shared Quaternion core (with vqc_proto / flux_hopf_lib ecosystem)
 pip install -e ../../flux_hopf_lib   # if cloned under Projects/ as sibling
-# or: pip install "flux-hopf-lib==0.2.1"
+# or: pip install "flux-hopf-lib==0.2.2"
 pip install -r requirements.txt
 ```
 
