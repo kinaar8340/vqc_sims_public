@@ -266,6 +266,6 @@ See [`requirements.txt`](requirements.txt). Core packages:
 
 Released under **CC-BY-NC-SA-4.0** with additional patent restrictions. You may view, fork, and modify for **non-commercial research** with attribution. Commercial use, sublicensing, or deployment requires written license from the patent holder.
 
-**Contact:** [kinaar0@protonmail.com](mailto:kinaar0@protonmail.com)
+**Contact:** [kinaar0@protonmail.com](mailto:kinaar0@protonmail.com) · X: [@kinaar8340](https://x.com/kinaar8340)
 
 Contributions welcome for non-commercial research use. See [`LICENSE`](LICENSE) for full terms.
